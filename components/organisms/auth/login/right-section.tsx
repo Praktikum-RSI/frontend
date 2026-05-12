@@ -1,12 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
@@ -113,9 +108,7 @@ export const LoginRightSection = () => {
                 name="identifier"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="email-username">
-                      Email/Username
-                    </FieldLabel>
+                    <FieldLabel htmlFor="email-username">Email/Username</FieldLabel>
                     <InputGroup className="h-10 has-[>[data-align=inline-start]]:[&>input]:pl-3">
                       <InputGroupInput
                         aria-invalid={fieldState.invalid}
@@ -199,7 +192,7 @@ export const LoginRightSection = () => {
             <p className="text-muted-foreground text-sm">
               Don&apos;t have an account yet?{" "}
               <Link
-                href="/register"
+                href="/auth/register"
                 className="text-primary font-semibold hover:underline"
               >
                 Register your interest
