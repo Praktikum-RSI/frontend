@@ -8,17 +8,18 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
+import { api } from "@/lib/api";
 import { LoginSuccessResponse } from "@/types/auth/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock, Ticket, User } from "lucide-react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Suspense, useCallback, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import useSWRMutation from "swr/mutation";
 import { LoginFormSchema } from "../types/login";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
 
 async function login(url: string, { arg }: { arg: LoginFormSchema }) {
   const response = await api.post<LoginSuccessResponse>(url, {
@@ -45,9 +46,19 @@ export const LoginRightSection = () => {
     onError: (error) => {
       toast.error(error.message);
     },
-    onSuccess: () => {
-      toast.success("Login successful");
-      router.push("/dashboard");
+    onSuccess: async (res) => {
+      const result = await signIn("auth-credentials", {
+        access_token: res.data.access_token,
+        refresh_token: res.data.refresh_token,
+        redirect: false,
+      });
+
+      if (result?.ok) {
+        toast.success("Login successful");
+        router.push("/dashboard");
+      } else {
+        toast.error(result?.error);
+      }
     },
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);

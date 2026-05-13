@@ -3,8 +3,16 @@
 import { SWRConfig, SWRConfiguration } from "swr";
 import { Toaster } from "./ui/sonner";
 import { ToasterProps } from "sonner";
+import { SessionProvider } from "next-auth/react";
+import { Session } from "next-auth";
 
-export const RootConfig = ({ children }: { children: React.ReactNode }) => {
+export const RootConfig = ({
+  children,
+  session,
+}: {
+  children: React.ReactNode;
+  session?: Session | null;
+}) => {
   const swrConfig: SWRConfiguration = {
     fetcher: (resource, init) =>
       fetch(resource, init).then((res) => res.json()),
@@ -19,9 +27,11 @@ export const RootConfig = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <SWRConfig value={swrConfig}>
-      {children}
-      <Toaster {...toasterConfig} />
-    </SWRConfig>
+    <SessionProvider session={session}>
+      <SWRConfig value={swrConfig}>
+        {children}
+        <Toaster {...toasterConfig} />
+      </SWRConfig>
+    </SessionProvider>
   );
 };
