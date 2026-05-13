@@ -18,21 +18,13 @@ import useSWRMutation from "swr/mutation";
 import { LoginFormSchema } from "../types/login";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/api";
 
 async function login(url: string, { arg }: { arg: LoginFormSchema }) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+  const response = await api.post<LoginSuccessResponse>(url, {
     body: JSON.stringify(arg),
   });
-
-  if (!response.ok) {
-    throw new Error(`${response.status}`);
-  }
-
-  return (await response.json()) as LoginSuccessResponse;
+  return response;
 }
 
 export const LoginRightSection = () => {
